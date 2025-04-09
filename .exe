@@ -1,0 +1,170 @@
+-- Create ScreenGui
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "CustomGui"
+screenGui.Parent = player.PlayerGui
+
+-- Create the main frame (Transparent Green Background)
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 300, 0, 400)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+mainFrame.BackgroundTransparency = 0.5
+mainFrame.Draggable = true
+mainFrame.Parent = screenGui
+
+-- Create tabs and tab buttons
+local tabs = {"TP tool", "Custom movesets", "Hacks", "WIP!"}
+local tabButtonsFrame = Instance.new("Frame")
+tabButtonsFrame.Size = UDim2.new(0, 60, 1, 0)
+tabButtonsFrame.Position = UDim2.new(0, 0, 0, 0)
+tabButtonsFrame.BackgroundTransparency = 1
+tabButtonsFrame.Parent = mainFrame
+
+local contentFrame = Instance.new("Frame")
+contentFrame.Size = UDim2.new(1, -60, 1, 0)
+contentFrame.Position = UDim2.new(0, 60, 0, 0)
+contentFrame.BackgroundTransparency = 1
+contentFrame.Parent = mainFrame
+
+-- Function to create buttons for tabs
+local function createTabButton(name, position)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, 0, 0, 40)
+    button.Position = UDim2.new(0, 0, 0, position)
+    button.Text = name
+    button.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    button.TextColor3 = Color3.fromRGB(0, 0, 0)
+    button.Parent = tabButtonsFrame
+    return button
+end
+
+-- Tab button click actions
+local currentTab = nil
+local function setCurrentTab(tabName)
+    if currentTab then
+        currentTab.Visible = false
+    end
+    currentTab = contentFrame:FindFirstChild(tabName)
+    if currentTab then
+        currentTab.Visible = true
+    end
+end
+
+-- Create content for each tab
+local tpTab = Instance.new("Frame")
+tpTab.Size = UDim2.new(1, 0, 1, 0)
+tpTab.BackgroundTransparency = 1
+tpTab.Visible = false
+tpTab.Parent = contentFrame
+
+local tpButton = Instance.new("TextButton")
+tpButton.Size = UDim2.new(0, 200, 0, 50)
+tpButton.Position = UDim2.new(0.5, -100, 0.5, -25)
+tpButton.Text = "Give Tool"
+tpButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+tpButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+tpButton.Parent = tpTab
+
+tpButton.MouseButton1Click:Connect(function()
+    -- Script to give the TP tool to the player
+    local tool = Instance.new("Tool")
+    tool.Name = "TPTool"
+    tool.RequiresHandle = true
+    local handle = Instance.new("Part")
+    handle.Name = "Handle"
+    handle.Size = Vector3.new(1, 1, 1)
+    handle.Anchored = true
+    handle.CanCollide = false
+    handle.Parent = tool
+    tool.Parent = player.Backpack
+
+    -- Tool functionality
+    tool.Activated:Connect(function()
+        local mouse = player:GetMouse()
+        local pos = mouse.Hit.p
+        player.Character:SetPrimaryPartCFrame(CFrame.new(pos))
+    end)
+end)
+
+local movesetTab = Instance.new("Frame")
+movesetTab.Size = UDim2.new(1, 0, 1, 0)
+movesetTab.BackgroundTransparency = 1
+movesetTab.Visible = false
+movesetTab.Parent = contentFrame
+
+local function createMovesetButton(movesetName, scriptUrl)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0, 200, 0, 50)
+    button.Text = movesetName
+    button.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    button.TextColor3 = Color3.fromRGB(0, 0, 0)
+    button.Parent = movesetTab
+
+    button.MouseButton1Click:Connect(function()
+        loadstring(game:HttpGet(scriptUrl))()
+    end)
+end
+
+-- Create buttons for moveset
+createMovesetButton("GOJO MOVESET", "https://gist.githubusercontent.com/SonicexePort/d83f3eca5e8092468df1551df09db39a/raw/861f16fbae8fab8803cabfbc01295bb5b687f86a/Death%20Port%20Six%20Eyes%20Public%20Beta")
+createMovesetButton("GoldenHead", "https://raw.githubusercontent.com/Kenjihin69/Kenjihin69/refs/heads/main/Baldy%20to%20golden%20head")
+createMovesetButton("MASTERY DEKU", "https://pastebin.com/raw/xKextYP5")
+
+-- Hacks Tab
+local hacksTab = Instance.new("Frame")
+hacksTab.Size = UDim2.new(1, 0, 1, 0)
+hacksTab.BackgroundTransparency = 1
+hacksTab.Visible = false
+hacksTab.Parent = contentFrame
+
+local speedInput = Instance.new("TextBox")
+speedInput.Size = UDim2.new(0, 200, 0, 50)
+speedInput.Position = UDim2.new(0.5, -100, 0.4, -25)
+speedInput.PlaceholderText = "Walkspeed"
+speedInput.Parent = hacksTab
+
+local jumpInput = Instance.new("TextBox")
+jumpInput.Size = UDim2.new(0, 200, 0, 50)
+jumpInput.Position = UDim2.new(0.5, -100, 0.6, -25)
+jumpInput.PlaceholderText = "Jump Height"
+jumpInput.Parent = hacksTab
+
+local applyHacksButton = Instance.new("TextButton")
+applyHacksButton.Size = UDim2.new(0, 200, 0, 50)
+applyHacksButton.Position = UDim2.new(0.5, -100, 0.8, -25)
+applyHacksButton.Text = "Apply Hacks"
+applyHacksButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+applyHacksButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+applyHacksButton.Parent = hacksTab
+
+applyHacksButton.MouseButton1Click:Connect(function()
+    local walkspeed = tonumber(speedInput.Text)
+    local jumphight = tonumber(jumpInput.Text)
+
+    if walkspeed then
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = walkspeed
+    end
+
+    if jumphight then
+        game.Players.LocalPlayer.Character.Humanoid.JumpHeight = jumphight
+    end
+end)
+
+-- WIP Tab
+local wipTab = Instance.new("Frame")
+wipTab.Size = UDim2.new(1, 0, 1, 0)
+wipTab.BackgroundTransparency = 1
+wipTab.Visible = false
+wipTab.Parent = contentFrame
+
+-- Create the tab buttons
+for i, tabName in ipairs(tabs) do
+    local button = createTabButton(tabName, (i - 1) * 40)
+    button.MouseButton1Click:Connect(function()
+        setCurrentTab(tabName)
+    end)
+end
+
+-- Set default tab
+setCurrentTab("TP tool")
